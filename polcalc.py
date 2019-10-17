@@ -1,4 +1,5 @@
-from building_datastructures/stack import Stack
+from building_datastructures.stack import Stack
+
 
 class Expression:
 
@@ -10,54 +11,60 @@ class Expression:
     def __repr__(self):
         return f"Expression object, which applies {self.operator} to {self.contents}"
 
-class ValueExpression:
+    def check_matching_paras(self, rawstringinput):
+        parastack = Stack()
+        parapairs = []
+        count = 0
 
-    def __init__(self, operator=None, operand=[]):
-        self.operator = operator
-        self.contents = operand
+        for i in rawstringinput:
 
-def check_matching_paras(rawstringinput):
-    parastack = Stack()
-    parapairs = []
-    count = 0
+            if i == "(":
+                parastack.push(count)
 
-    for i in rawstringinput:
+            elif i == ")" and len(parastack) == 0:
+                return None
 
-        if i == "(":
-            parastack.push(count)
+            elif i == ")" and len(parastack) > 0:
+                parapairs.append((parastack.pop(), count))
+            count += 1
 
-        elif i == ")" and len(parastack) == 0:
+        if len(parastack) == 0 and count > 0:
+            return parapairs
+
+        else:
             return None
 
-        elif i == ")" and len(parastack) > 0:
-            parapairs.append((parastack.pop(), count))
-        count += 1
+    def assign_content_to_expressions:
 
-    if len(parastack) == 0 and count > 0:
-        return parapairs
 
-    else:
-        return None
+class ValueExpression:
 
-def check_expression_or_valueexpression():
-    ...
+    def __init__(self, raw=None, operator=None, operand=None):
+        self.operator = operator
+        self.contents = operand
+        self.raw = raw
 
-def evaluate_expression(expression):
+    def reformat_ve(self, raw):
+        self.operator = self.raw[1]
+        del self.raw[0], self.raw[-1], self.raw[1]
 
-    groupings = check_matching_paras(expression)
+        operandlist = self.raw.split()
+        self.operand = operandlist
 
-    # for group in groupings:
-    #     grouplen = group[1] - group[0]
-    #     start = group[0] + 1
-    #     end = grouplen + 1
-    #     grouptext = expression[start:end]
-    #     print(grouptext)
+    def evaluate_ve(self):
 
-    expression_stack = Stack()
-    count = 0
-    inexpression = False
-    operator = ['+','-','*','/','%','//','sqrt']
-    expressions = []
+         for group in groupings:
+             grouplen = group[1] - group[0]
+             start = group[0] + 1
+             end = grouplen + 1
+             grouptext = self(start:end)
+             print(grouptext)
+
+        expression_stack = Stack()
+        count = 0
+        inexpression = False
+        operator = ['+','-','*','/','%','//','sqrt']
+        expressions = []
 
     for i in expression:
 
@@ -87,10 +94,3 @@ def evaluate_expression(expression):
 
         count += 1
 
-
-def evaluate_valueexpression():
-    ...
-
-
-
-evaluate_expression("((THIS)((IS)FUN YEAH))")
