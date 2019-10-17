@@ -3,30 +3,32 @@ from building_datastructures.stack import Stack
 
 class Expression:
 
-    def __init__(self, operator=None, expressions=None, operand=[]):
+    def __init__(self, raw=None, operator=None, expressions=None, operand=None):
+        self.raw = raw
         self.operator = operator
         self.expressions = expressions
         self.operand = operand
 
     def __repr__(self):
-        return f"Expression object, which applies {self.operator} to {self.contents}"
+        return f"Expression object, ADD SOMETHING USEFUL"
 
-    def check_matching_paras(self, rawstringinput):
+    def get_matching_para_sets(self):
         parastack = Stack()
         parapairs = []
         count = 0
 
-        for i in rawstringinput:
+        for i in self.raw:
 
             if i == "(":
                 parastack.push(count)
-
-            elif i == ")" and len(parastack) == 0:
-                return None
+                count +=1
 
             elif i == ")" and len(parastack) > 0:
                 parapairs.append((parastack.pop(), count))
-            count += 1
+                count += 1
+
+            elif i == ")" and len(parastack) == 0:
+                return None
 
         if len(parastack) == 0 and count > 0:
             return parapairs
@@ -34,8 +36,42 @@ class Expression:
         else:
             return None
 
-    def assign_content_to_expressions:
+    def assign_content_to_expressions(self): #MUST FIX
+        contentstack = Stack()
+        expressions = []
 
+        for i in self.raw:
+
+            if i == ")" and len(contentstack) == 0:
+                return None
+
+            if i == "(":
+                contentstack.push(i)
+
+            elif i == ")" and len(contentstack) > 0:
+
+                matchingopen = "("
+                newexpression = Expression()
+                newraw = []
+                contentstack.push('j')
+                j = contentstack.peek()
+
+                while j != matchingopen:
+                    j = contentstack.pop()
+                    newraw.append(j)
+                    j = contentstack.peek()
+
+                newraw.append(contentstack.pop())
+
+                newexpression.raw = "".join(newraw)
+                expressions.append(newexpression)
+
+                return expressions
+
+            else:
+                contentstack.push(i)
+
+        return expressions
 
 class ValueExpression:
 
@@ -44,53 +80,82 @@ class ValueExpression:
         self.contents = operand
         self.raw = raw
 
-    def reformat_ve(self, raw):
-        self.operator = self.raw[1]
-        del self.raw[0], self.raw[-1], self.raw[1]
+    def __repr__(self):
+        if self.raw is not None:
+            self.reformat_ve()
+        return f"ValueExpression object, which applies {self.operator} to {self.operand}"
 
-        operandlist = self.raw.split()
-        self.operand = operandlist
+    def reformat_ve(self):
+
+        if self.raw is None:
+            raise Exception("Cannot Reformat a Stack with no Raw Value")
+
+        self.operator = self.raw[1]
+        rawwithoutparas = self.raw[2:-1]
+
+        intlist = []
+
+        for i in rawwithoutparas.split():
+            intlist.append(int(i))
+
+        self.operand = intlist
+        self.raw = None
 
     def evaluate_ve(self):
 
-         for group in groupings:
-             grouplen = group[1] - group[0]
-             start = group[0] + 1
-             end = grouplen + 1
-             grouptext = self(start:end)
-             print(grouptext)
+        if self.raw:
+            self.reformat_ve()
 
-        expression_stack = Stack()
-        count = 0
-        inexpression = False
-        operator = ['+','-','*','/','%','//','sqrt']
-        expressions = []
+        if self.operator == "+":
+            result = 0
+            for i in self.operand:
+                result += i
+            return result
 
-    for i in expression:
+        if self.operator == "-":
+            result = self.operand[0]
+            for i in self.operand[1:]:
+                result -= i
+            return result
 
-        if i == ")" and len(expression_stack) == 0:
-            return None
+        if self.operator == "*":
+            result = self.operand[0]
+            for i in self.operand[1:]:
+                result *= i
+            return result
 
-        elif i == "(":
-            expression_stack.push(i)
-            inexpression = True
-
-        elif i in operator:
-            newexpression = Expression(operator=i)
-
-        elif i == ")" and len(expression_stack) > 0:
-
-            while expression_stack.pop() != '(':
-                newexpression.operator.append(j)
+        if self.operator == "/":
+            result = self.operand[0]
+            for i in self.operand[1:]:
+                result = result / i
+            return result
 
 
-            #when you hit a close bracket, pop everything into an expression until you hit an open bracket.
-
-        #     Recursion somewhere in here?
-
-
-        elif inexpression == True:
-            newexpression.operand.append(i)
-
-        count += 1
+    # for i in expression:
+    #
+    #     if i == ")" and len(expression_stack) == 0:
+    #         return None
+    #
+    #     elif i == "(":
+    #         expression_stack.push(i)
+    #         inexpression = True
+    #
+    #     elif i in operator:
+    #         newexpression = Expression(operator=i)
+    #
+    #     elif i == ")" and len(expression_stack) > 0:
+    #
+    #         while expression_stack.pop() != '(':
+    #             newexpression.operator.append(j)
+    #
+    #
+    #         #when you hit a close bracket, pop everything into an expression until you hit an open bracket.
+    #
+    #     #     Recursion somewhere in here?
+    #
+    #
+    #     elif inexpression == True:
+    #         newexpression.operand.append(i)
+    #
+    #     count += 1
 
