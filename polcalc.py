@@ -1,4 +1,4 @@
-from building_datastructures.stack import Stack
+from datastructures_and_algorithms.stack import Stack
 
 
 class Expression:
